@@ -3,59 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lotmetrik — Stockbit Stream Scraper & Kit Sentimen Ritel</title>
-  <meta name="description" content="Alat bantu riset mandiri untuk menyedot obrolan stream forum Stockbit dalam 10 detik, mendeteksi akun pom-pom buzzer, dan membaca mood sentimen ritel IDX.">
+  <title>Kit Sentimen Ritel IDX — Riset Sentimen & Deteksi Pom-Pom Forum Saham</title>
+  <meta name="description" content="Paket formula prompt AI spesifik bursa Indonesia & kamus slang pasar modal untuk membedah obrolan forum saham, mendeteksi akun pom-pom, dan mengukur sentimen riil. Dilengkapi bonus ekstensi scraper.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-main: #0B132B;
-      --bg-card: #111D40;
-      --bg-card-alt: #162452;
-      --border: #203366;
-      --border-focus: #10B981;
-      --primary: #10B981;
-      --primary-hover: #059669;
-      --primary-light: rgba(16, 185, 129, 0.12);
-      --text: #F8FAFC;
-      --text-muted: #94A3B8;
-      --text-dim: #64748B;
-      --danger: #EF4444;
-      --warning: #F59E0B;
-      --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      --mono: 'JetBrains Mono', monospace;
+      --bg-base: #080C14;
+      --bg-surface: #0E1422;
+      --bg-surface-elevated: #141C30;
+      --border-subtle: #1C263D;
+      --border-strong: #2A3859;
+      --accent-emerald: #10B981;
+      --accent-emerald-subtle: rgba(16, 185, 129, 0.12);
+      --accent-rose: #F43F5E;
+      --accent-rose-subtle: rgba(244, 63, 94, 0.12);
+      --accent-amber: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: var(--bg-main);
-      color: var(--text);
-      font-family: var(--font);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
       line-height: 1.6;
-      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
-    .mono { font-family: var(--mono); }
+    .mono { font-family: var(--font-mono); }
     a { color: inherit; text-decoration: none; }
 
-    /* Layout Containers */
+    /* Layout */
     .container {
-      max-width: 1100px;
+      max-width: 1040px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 24px;
     }
 
-    /* Navbar */
+    /* Top Compliance Bar */
+    .compliance-banner {
+      background: #0B101C;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 8px 16px;
+      letter-spacing: 0.02em;
+    }
+    .compliance-banner b { color: var(--text-secondary); }
+
+    /* Navigation */
     nav {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(11, 19, 43, 0.85);
+      z-index: 50;
+      background: rgba(8, 12, 20, 0.88);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(32, 51, 102, 0.6);
-      padding: 16px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 0;
     }
-    .nav-inner {
+    .nav-wrap {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -63,494 +75,551 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       font-weight: 800;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       letter-spacing: -0.02em;
     }
-    .brand-icon {
-      color: var(--primary);
-      font-size: 1.2rem;
+    .brand-mark {
+      width: 18px;
+      height: 18px;
+      background: var(--accent-emerald);
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 10px;
+      font-weight: 900;
     }
     .brand-tag {
-      font-size: 0.75rem;
-      background: var(--primary-light);
-      color: var(--primary);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 2px 8px;
-      border-radius: 20px;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      background: var(--border-subtle);
+      color: var(--text-secondary);
+      border-radius: 4px;
       font-weight: 600;
     }
-    .nav-cta {
+    .nav-links {
       display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .btn-sm {
-      padding: 8px 16px;
-      border-radius: 8px;
+      gap: 20px;
       font-size: 0.85rem;
+      color: var(--text-secondary);
+      align-items: center;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .btn-nav {
+      background: var(--accent-emerald);
+      color: #042F2E;
       font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      transition: background 0.15s;
     }
-    .btn-sm.outline {
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-    }
-    .btn-sm.outline:hover {
-      background: var(--bg-card);
-      border-color: var(--text-muted);
-    }
-    .btn-sm.primary {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-    }
-    .btn-sm.primary:hover {
-      background: var(--primary-hover);
-    }
+    .btn-nav:hover { background: #34D399; }
 
     /* Hero Section */
     .hero {
-      padding: 80px 0 60px;
+      padding: 72px 0 54px;
       text-align: center;
-      position: relative;
     }
-    .badge-pill {
+    .kicker {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: 30px;
-      font-size: 0.85rem;
-      color: var(--primary);
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
       font-weight: 600;
-      margin-bottom: 24px;
+      color: var(--accent-emerald);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+      padding: 4px 10px;
+      background: var(--accent-emerald-subtle);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 4px;
     }
     .hero h1 {
-      font-size: 2.8rem;
+      font-size: 2.65rem;
       font-weight: 800;
       line-height: 1.2;
-      letter-spacing: -0.03em;
-      max-width: 850px;
+      letter-spacing: -0.035em;
+      max-width: 820px;
       margin: 0 auto 20px;
+      color: #FFFFFF;
     }
-    .hero h1 span.gradient {
-      background: linear-gradient(135deg, #10B981, #6EE7B7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero h1 .highlight {
+      color: var(--accent-emerald);
+      position: relative;
     }
-    .hero p.lead {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 680px;
-      margin: 0 auto 36px;
+    .hero p.sub {
+      font-size: 1.08rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 34px;
+      line-height: 1.65;
     }
-    .hero-actions {
+    .hero-cta-group {
       display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 40px;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
     }
-    .btn-lg {
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
+    .btn-primary {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
+      justify-content: center;
+      gap: 10px;
+      background: var(--accent-emerald);
+      color: #042F2E;
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding: 16px 36px;
+      border-radius: 8px;
+      border: 1px solid #34D399;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
     }
-    .btn-lg.primary {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+    .btn-primary:hover {
+      background: #34D399;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.3);
     }
-    .btn-lg.primary:hover {
-      background: var(--primary-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(16, 185, 129, 0.4);
+    .cta-subtext {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-    .btn-lg.secondary {
-      background: var(--bg-card);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-lg.secondary:hover {
-      background: var(--bg-card-alt);
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-    .hero-meta {
-      font-size: 0.85rem;
-      color: var(--text-dim);
-    }
+    .cta-subtext span { display: inline-flex; align-items: center; gap: 4px; }
 
-    /* Product Showcase Mockup */
-    .showcase {
-      margin: 20px auto 70px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    /* Interactive Data Comparison Terminal (Anti-Slop Showcase) */
+    .terminal-window {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
       overflow: hidden;
-      max-width: 820px;
+      margin: 30px auto 70px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
       text-align: left;
     }
-    .showcase-header {
-      background: var(--bg-card-alt);
-      padding: 12px 20px;
+    .terminal-bar {
+      background: var(--bg-surface-elevated);
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-    .showcase-dots {
-      display: flex;
-      gap: 8px;
-    }
-    .showcase-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-    .showcase-dot.r { background: #EF4444; }
-    .showcase-dot.y { background: #F59E0B; }
-    .showcase-dot.g { background: #10B981; }
-    .showcase-title {
-      font-size: 0.8rem;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.75rem;
       color: var(--text-muted);
-      font-weight: 600;
     }
-    .showcase-body {
-      padding: 24px;
+    .terminal-dots { display: flex; gap: 6px; }
+    .t-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border-strong); }
+    .t-dot.active { background: var(--accent-emerald); }
+
+    .terminal-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      border-bottom: 1px solid var(--border-subtle);
     }
     @media (max-width: 768px) {
-      .showcase-body { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 2rem; }
+      .terminal-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.95rem; }
+      .hero p.sub { font-size: 0.96rem; }
     }
-    .mock-panel {
-      background: rgba(11, 19, 43, 0.7);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
+    .t-col {
+      padding: 20px;
     }
-    .mock-title {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .t-col.raw {
+      background: #090E1A;
+      border-right: 1px solid var(--border-subtle);
+    }
+    .t-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-    .senti-bar {
-      display: flex;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 8px 0 12px;
-      background: #203366;
-    }
-    .senti-seg { height: 100%; }
-    .senti-seg.bull { background: #10B981; width: 68%; }
-    .senti-seg.bear { background: #EF4444; width: 18%; }
-    .senti-seg.net { background: #64748B; width: 14%; }
-    .mock-badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-    .mock-badge.bull { background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .mock-badge.noise { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-
-    /* Problem Section */
-    .section-title {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .section-title h2 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-    .section-title p {
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+    .raw-post {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 2px solid var(--border-strong);
+      margin-bottom: 8px;
+      border-radius: 0 4px 4px 0;
+      font-family: var(--font-mono);
+    }
+    .raw-post.suspicious {
+      border-left-color: var(--accent-rose);
+      background: rgba(244, 63, 94, 0.04);
+    }
+    .raw-post .user { color: var(--text-primary); font-weight: 600; }
+    .raw-post .tag { color: var(--accent-amber); }
+
+    /* Output Side */
+    .ai-metric-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .metric-card {
+      flex: 1;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .metric-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-family: var(--font-mono); }
+    .metric-val { font-size: 1.25rem; font-weight: 800; margin-top: 2px; }
+    .metric-val.bull { color: var(--accent-emerald); }
+    .metric-val.alert { color: var(--accent-rose); }
+
+    .ai-finding {
+      background: rgba(16, 185, 129, 0.04);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 0.82rem;
+      margin-bottom: 10px;
+    }
+    .ai-finding h4 {
+      font-size: 0.8rem;
+      color: var(--accent-emerald);
+      margin-bottom: 4px;
+      font-family: var(--font-mono);
+    }
+    .ai-finding p { color: var(--text-secondary); font-size: 0.78rem; margin: 0; }
+
+    /* Section Styling */
+    .section-wrap {
+      padding: 50px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .sec-header {
+      margin-bottom: 36px;
+    }
+    .sec-header .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-emerald);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .sec-header h2 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #FFF;
+    }
+    .sec-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 6px;
+      max-width: 620px;
+    }
+
+    /* Cards Grid */
     .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-bottom: 70px;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 20px;
     }
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+    .feature-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
       padding: 24px;
-      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
     }
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(16, 185, 129, 0.4);
+    .feature-card:hover {
+      border-color: var(--border-strong);
     }
-    .card-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      margin-bottom: 16px;
-      background: var(--bg-card-alt);
-      border: 1px solid var(--border);
-    }
-    .card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-    .card p {
+    .feature-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
       color: var(--text-muted);
-      font-size: 0.92rem;
+      margin-bottom: 12px;
+    }
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #FFF;
+    }
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
     }
 
-    /* Product Section (Kit Sentimen Ritel) */
-    .pricing-wrap {
-      background: linear-gradient(180deg, var(--bg-card) 0%, rgba(17, 29, 64, 0.6) 100%);
-      border: 2px solid var(--border-focus);
-      border-radius: 20px;
+    /* Offer Section (Kit Sentimen Ritel) */
+    .offer-box {
+      background: linear-gradient(180deg, #0E1626 0%, #090E1A 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
       padding: 40px;
-      max-width: 850px;
-      margin: 0 auto 70px;
       position: relative;
-      box-shadow: 0 20px 60px rgba(16, 185, 129, 0.12);
+      margin-top: 20px;
     }
-    .pricing-tag {
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--primary);
-      color: #fff;
-      font-size: 0.8rem;
-      font-weight: 800;
-      padding: 4px 16px;
-      border-radius: 20px;
-      letter-spacing: 0.05em;
+    .offer-badge {
+      display: inline-block;
+      background: var(--accent-emerald-subtle);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 14px;
       text-transform: uppercase;
     }
-    .pricing-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .pricing-header h3 {
+    .offer-title {
       font-size: 2rem;
       font-weight: 800;
+      letter-spacing: -0.03em;
       margin-bottom: 8px;
+      color: #FFF;
     }
-    .price-box {
+    .offer-desc {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      max-width: 680px;
+      margin-bottom: 28px;
+    }
+    .price-row {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: baseline;
       gap: 12px;
-      margin: 16px 0;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
     }
-    .price-old {
-      color: var(--text-dim);
+    .price-anchor {
+      font-size: 1.25rem;
+      color: var(--text-muted);
       text-decoration: line-through;
-      font-size: 1.3rem;
-      font-weight: 600;
+      font-family: var(--font-mono);
     }
-    .price-new {
+    .price-actual {
       font-size: 3rem;
       font-weight: 800;
-      color: var(--primary);
-      letter-spacing: -0.02em;
+      color: #FFF;
+      font-family: var(--font-mono);
+      letter-spacing: -0.04em;
     }
-    .price-term {
+    .price-note {
       font-size: 0.85rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
-    .kit-features {
+
+    /* What's Inside List */
+    .deliverables {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
       margin-bottom: 32px;
     }
     @media (max-width: 640px) {
-      .kit-features { grid-template-columns: 1fr; }
+      .deliverables { grid-template-columns: 1fr; }
+      .offer-box { padding: 24px; }
+      .price-actual { font-size: 2.2rem; }
     }
-    .kit-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      background: rgba(11, 19, 43, 0.5);
-      border: 1px solid var(--border);
+    .deliv-item {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
       padding: 14px;
-      border-radius: 10px;
     }
-    .kit-item .chk {
-      color: var(--primary);
-      font-size: 1.1rem;
-      font-weight: bold;
+    .deliv-item.bonus {
+      background: rgba(16, 185, 129, 0.04);
+      border-color: rgba(16, 185, 129, 0.25);
     }
-    .kit-item h4 {
-      font-size: 0.95rem;
+    .deliv-tag {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--accent-emerald);
       font-weight: 700;
+      text-transform: uppercase;
       margin-bottom: 4px;
     }
-    .kit-item p {
+    .deliv-item h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+    .deliv-item p {
       font-size: 0.82rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
+      line-height: 1.45;
     }
 
-    /* FAQ */
-    .faq-list {
-      max-width: 750px;
-      margin: 0 auto 70px;
-    }
-    .faq-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 12px;
-    }
-    .faq-item h4 {
-      font-size: 1.05rem;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-    .faq-item p {
+    /* Ironclad Legal Section (Anti-Sue) */
+    .legal-card {
+      background: #060910;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 24px;
+      margin: 40px 0;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      font-size: 0.92rem;
+      line-height: 1.6;
     }
+    .legal-card h4 {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .legal-card p { margin-bottom: 8px; }
+    .legal-card p:last-child { margin-bottom: 0; }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 0;
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 0.85rem;
+      border-top: 1px solid var(--border-subtle);
+      padding: 32px 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
     }
-    footer a { color: var(--primary); }
-    footer a:hover { text-decoration: underline; }
+    footer a { color: var(--text-secondary); }
+    footer a:hover { color: var(--text-primary); }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- Compliance Banner -->
+  <div class="compliance-banner">
+    🛡️ <b>Disclaimer Independensi:</b> Produk riset pihak ketiga mandiri. Tidak terafiliasi, tidak didukung, dan bukan representasi resmi dari PT Stockbit Sekuritas Digital.
+  </div>
+
+  <!-- Navigation -->
   <nav>
-    <div class="container nav-inner">
+    <div class="container nav-wrap">
       <div class="brand">
-        <span class="brand-icon">◆</span>
+        <span class="brand-mark">◆</span>
         <span>Lotmetrik</span>
-        <span class="brand-tag">v2.14.0</span>
+        <span class="brand-tag">Research Kit</span>
       </div>
-      <div class="nav-cta">
-        <a href="extension.zip" download="stockbit-stream-scraper-v2.14.0.zip" class="btn-sm outline">⬇ Download Ekstensi</a>
-        <a href="#kit" class="btn-sm primary">Beli Kit Rp47rb</a>
+      <div class="nav-links">
+        <a href="#masalah">Anatomi Pom-Pom</a>
+        <a href="#bedah-ai">Bedah Data</a>
+        <a href="#legal">Legalitas</a>
+        <a href="#checkout" class="btn-nav">Ambil Kit — Rp47.000</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero">
+  <!-- Hero Section -->
+  <header class="hero">
     <div class="container">
-      <div class="badge-pill">
-        <span>🟢 Ekstensi Chrome MV3 • 100% Lokal & Bebas Warning</span>
+      <div class="kicker">
+        <span>●</span> Riset Sentimen Ritel Pasar Modal Indonesia
       </div>
-      <h1>Jangan Jadi <span class="gradient">Exit Liquidity</span> di Saham Gorengan</h1>
-      <p class="lead">
-        Sedot ratusan obrolan bising di stream Stockbit dalam 10 detik. Deteksi akun pom-pom buzzer, saring euforia semu, dan baca mood sentimen ritel sebelum telat.
+      <h1>
+        Bongkar Jebakan <span class="highlight">Pom-Pom & Buzzer</span> di Forum Saham Sebelum Kamu Beli di Pucuk.
+      </h1>
+      <p class="sub">
+        Jangan jadi <i>exit liquidity</i> saat bandar jualan diam-diam. Ekstrak ratusan obrolan forum dalam 10 detik, bersihkan spam promosi berbayar, dan bedah emosi riil trader dengan formula AI tervalidasi pasar modal IDX.
       </p>
-      <div class="hero-actions">
-        <a href="#kit" class="btn-lg primary">
-          <span>Dapatkan Kit Sentimen (Rp47.000)</span>
-          <span>→</span>
+
+      <div class="hero-cta-group">
+        <a href="#checkout" class="btn-primary">
+          <span>Dapatkan Kit Sentimen Ritel (Rp47.000)</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
         </a>
-        <a href="extension.zip" download="stockbit-stream-scraper-v2.14.0.zip" class="btn-lg secondary">
-          <span>⬇ Download Ekstensi Gratis (.zip)</span>
-        </a>
+        <div class="cta-subtext">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Sekali bayar via QRIS</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Termasuk Bonus Ekstensi Scraper v2.14.0</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Bisa di HP & Laptop</span>
+        </div>
       </div>
-      <p class="hero-meta">
-        ⚡ Sekali klik • Tanpa login server • 100% berjalan di browser lokal kamu
-      </p>
     </div>
-  </section>
+  </header>
 
-  <!-- Live Showcase Preview -->
-  <section class="container">
-    <div class="showcase">
-      <div class="showcase-header">
-        <div class="showcase-dots">
-          <div class="showcase-dot r"></div>
-          <div class="showcase-dot y"></div>
-          <div class="showcase-dot g"></div>
+  <!-- Terminal Live Comparison (Anti-Slop Visual) -->
+  <section class="container" id="bedah-ai">
+    <div class="terminal-window">
+      <div class="terminal-bar">
+        <div class="terminal-dots">
+          <div class="t-dot active"></div>
+          <div class="t-dot"></div>
+          <div class="t-dot"></div>
         </div>
-        <div class="showcase-title">Stockbit Stream Scraper v2.14.0 (Live Panel Preview)</div>
-        <div style="font-size: 0.75rem; color: #10B981; font-weight: 700;">🟢 Sesi 1 IDX</div>
+        <div class="mono">LOTMETRIK RISK INSPECTOR • MODEL: SENTIMEN-IDX-v2</div>
+        <div class="mono" style="color: var(--accent-emerald);">EMITEN: $ANTM</div>
       </div>
-      <div class="showcase-body">
-        <div class="mock-panel">
-          <div class="mock-title">Hasil Scrape Real-Time</div>
-          <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 4px;" class="mono">$BBRI</div>
-          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-            142 post • 98 user • Hari ini
+      <div class="terminal-grid">
+        <!-- Left: Raw Stream Noise -->
+        <div class="t-col raw">
+          <div class="t-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            Obrolan Mentah di Forum (Bising & Bias)
           </div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 0.85rem; font-weight: 700;">Mood Ritel</span>
-            <span class="mock-badge bull">🟢 Dominan Bullish</span>
+          <div class="raw-post suspicious">
+            <span class="user">@cuan_kilat99</span>: ARAA KAN NDAR <span class="tag">$ANTM</span> <span class="tag">$BUMI</span> GAS HAKA JANGAN KETINGGALAN!
           </div>
-          <div class="senti-bar">
-            <div class="senti-seg bull"></div>
-            <div class="senti-seg bear"></div>
-            <div class="senti-seg net"></div>
+          <div class="raw-post">
+            <span class="user">@swing_trader</span>: bid 2900 mulai ditebelin tapi kok offernya dimakan sendiri ya?
           </div>
-          <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between;" class="mono">
-            <span style="color: #10B981;">68% Bull</span>
-            <span style="color: #EF4444;">18% Bear</span>
-            <span>14% Netral</span>
+          <div class="raw-post suspicious">
+            <span class="user">@screener_dewa</span>: Sinyal saham arah ARA besok, cek link tele di bio sekarang!
           </div>
-
-          <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); font-size: 0.82rem; color: var(--text-muted);">
-            <b>Velocity:</b> 📈 +140% trafik obrolan vs kemarin
+          <div class="raw-post">
+            <span class="user">@investor_santai</span>: bandarnya jujur banget hari ini, terima kasih ndar :)
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 10px;" class="mono">
+            *AI biasa mengira "bandarnya jujur" adalah pujian bullish. Kit Sentimen mengklasifikasikannya sebagai SARKASME (Bearish).
           </div>
         </div>
 
-        <div class="mock-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
-          <div>
-            <div class="mock-title">AI & Anti-Pom-Pom Engine</div>
-            <div style="font-size: 0.85rem; margin-bottom: 8px;">
-              🛡️ <b>Filter Noise:</b> 12 post promosi VIP/grup WA otomatis disingkirkan dari hitungan.
+        <!-- Right: What the Kit Extracts -->
+        <div class="t-col">
+          <div class="t-label" style="color: var(--accent-emerald);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Hasil Olahan Formula Kit Sentimen di AI
+          </div>
+
+          <div class="ai-metric-row">
+            <div class="metric-card">
+              <div class="metric-title">Sentimen Organik</div>
+              <div class="metric-val alert mono">42% Bull</div>
             </div>
-            <div style="font-size: 0.85rem; margin-bottom: 8px;">
-              ⚡ <b>Smart Fallback:</b> Weekend/Senin pagi otomatis muat data Jumat sore (tidak akan 0 post).
+            <div class="metric-card">
+              <div class="metric-title">Noise / Kompor</div>
+              <div class="metric-val mono" style="color: var(--accent-amber);">24% Spam</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Risk Signal</div>
+              <div class="metric-val alert mono">HIGH FOMO</div>
             </div>
           </div>
-          <div style="display: flex; gap: 8px; margin-top: 16px;">
-            <button class="btn-sm primary" style="flex: 1; text-align: center;">🚀 Buka AI</button>
-            <button class="btn-sm outline" style="flex: 1; text-align: center;">📋 Salin</button>
-            <button class="btn-sm outline" style="flex: 0.6; text-align: center;">⬇ CSV</button>
+
+          <div class="ai-finding">
+            <h4>🚩 Sinyal Divergence Terdeteksi</h4>
+            <p>Teriakan ARA meningkat tajam pada sesi 1, namun frekuensi keluhan "berat/ambles" mendominasi obrolan sesi 2. Indikasi distribusi bandar ke ritel.</p>
+          </div>
+
+          <div class="ai-finding" style="border-color: rgba(244, 63, 94, 0.3); background: rgba(244, 63, 94, 0.04);">
+            <h4 style="color: var(--accent-rose);">⚠️ 2 Akun Buzzer Teridentifikasi</h4>
+            <p>Akun @cuan_kilat99 dan @screener_dewa terdeteksi melakukan spam berulang dengan cashtag ganda untuk memancing likuiditas ritel.</p>
           </div>
         </div>
       </div>
@@ -558,151 +627,124 @@
   </section>
 
   <!-- Problem Section -->
-  <section class="container" style="padding: 40px 0;">
-    <div class="section-title">
-      <h2>Kenapa Stream Saham Sering Menjebak Ritel?</h2>
-      <p>Forum bursa bukan tempat cari sinyal jujur. Ini adalah medan perang psikologi ritel vs bandar.</p>
-    </div>
-    <div class="grid-3">
-      <div class="card">
-        <div class="card-icon">📢</div>
-        <h3>Banjir Akun Buzzer & Pom-pom</h3>
-        <p>Saat bandar mau jualan (*distribusi*), stream dipenuhi teriakan "ARAA 🚀" dan "HAKA SEKARANG" biar ritel rebutan beli di pucuk.</p>
+  <section class="section-wrap" id="masalah">
+    <div class="container">
+      <div class="sec-header">
+        <div class="eyebrow">Mengapa Ini Terjadi?</div>
+        <h2>Tiga Ilusi yang Kerap Menjerat Trader Ritel</h2>
+        <p>Forum saham publik bukan tempat mencari sinyal jujur tanpa filter data yang objektif.</p>
       </div>
-      <div class="card">
-        <div class="card-icon">⏳</div>
-        <h3>Membaca Ratusan Post Menghabiskan Jam</h3>
-        <p>Scroll ratusan post satu per satu bikin mata capek dan pikiran bias. Kamu butuh data kuantitatif dalam 10 detik, bukan asumsi.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">🤖</div>
-        <h3>Tanya Saham ke AI Biasa Itu "Halu"</h3>
-        <p>ChatGPT gratisan tidak tahu apa yang lagi diobrolkan di IDX hari ini tanpa kamu suapi data stream mentah yang bersih dan terstruktur.</p>
+
+      <div class="grid-3">
+        <div class="feature-card">
+          <div class="feature-num">01 / PERCEPTION BIAS</div>
+          <h3>Euforia Semu Akun Kompor</h3>
+          <p>Saat pihak tertentu berniat melepas barang (*distribusi*), stream kerap dibanjiri ajakan beli masal. Tanpa audit kata, kamu merasa seluruh pasar sedang optimis padahal sedang dipancing beli di harga pucuk.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-num">02 / LLM LOCAL BLINDSPOT</div>
+          <h3>AI Standar Tidak Paham Slang IDX</h3>
+          <p>ChatGPT standar dibangun dengan dataset bahasa Inggris. Saat disuapi kalimat "bandar jujur", "welcome apestor", atau "pagarin ndar", model AI umum menganggapnya bullish karena ketiadaan kamus sarkasme bursa lokal.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-num">03 / TIME INEFFICIENCY</div>
+          <h3>Membaca Ratusan Post Menghabiskan Jam</h3>
+          <p>Membaca 200–500 post secara manual menguras energi emosional dan menimbulkan *bias kognitif*. Kamu butuh ekstraksi terstruktur dalam hitungan detik agar bisa fokus pada eksekusi trading plan.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Commercial Product: Kit Sentimen Ritel -->
-  <section class="container" id="kit">
-    <div class="pricing-wrap">
-      <div class="pricing-tag">Special Launch Deal • 52% OFF</div>
-      <div class="pricing-header">
-        <h3>Kit Sentimen Ritel IDX v2.0</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-          Paket 4 Formula Prompt AI Tervalidasi + Kamus Slang Terstruktur. Bikin ChatGPT/Claude menganalisa stream Stockbit layaknya analis bandarmologi senior.
+  <!-- Product & Deliverables Section -->
+  <section class="section-wrap" id="checkout">
+    <div class="container">
+      <div class="offer-box">
+        <span class="offer-badge">Edisi Akses Terpadu • 2026</span>
+        <h2 class="offer-title">Kit Sentimen Ritel IDX v2.0</h2>
+        <p class="offer-desc">
+          Paket intelektual siap saji berupa 4 formula prompt AI spesifik pasar modal Indonesia, kamus slang dan sarkasme terstruktur, panduan audit psikologi pasar, plus ekstensi browser otomatis.
         </p>
-        <div class="price-box">
-          <span class="price-old">Rp 99.000</span>
-          <span class="price-new">Rp 47.000</span>
-        </div>
-        <div class="price-term">Sekali bayar seumur hidup • Akses instan via QRIS (Setara 1 lot saham receh)</div>
-      </div>
 
-      <div class="kit-features">
-        <div class="kit-item">
-          <span class="chk">✓</span>
-          <div>
-            <h4>Prompt #1 — Detektor Pom-Pom & Buzzer</h4>
-            <p>Memisahkan obrolan organik dari akun kompor titipan bandar yang memancing exit liquidity.</p>
-          </div>
+        <div class="price-row">
+          <span class="price-anchor">Rp 99.000</span>
+          <span class="price-actual">Rp 47.000</span>
+          <span class="price-note">Sekali bayar seumur hidup • Setara 1 lot saham receh</span>
         </div>
-        <div class="kit-item">
-          <span class="chk">✓</span>
-          <div>
-            <h4>Prompt #2 — Radar Divergence (Mood vs Realita)</h4>
-            <p>Mendeteksi bahaya euforia ritel saat harga saham macet atau volume anomali.</p>
-          </div>
-        </div>
-        <div class="kit-item">
-          <span class="chk">✓</span>
-          <div>
-            <h4>Prompt #3 — Scalper Velocity Surge Alert</h4>
-            <p>Mengukur lonjakan obrolan per jam sebelum saham meledak atau guyuran tiba.</p>
-          </div>
-        </div>
-        <div class="kit-item">
-          <span class="chk">✓</span>
-          <div>
-            <h4>Prompt #4 — Kamus Slang IDX Terstruktur</h4>
-            <p>Lengkap dengan istilah lokal: HAKA, BSJP, Guyur, Bandar Masuk, Pagarin Ndar, hingga Sarkasme bursa.</p>
-          </div>
-        </div>
-      </div>
 
-      <div style="text-align: center;">
-        <a href="https://lynk.id/" target="_blank" class="btn-lg primary" style="width: 100%; max-width: 480px; justify-content: center;">
-          <span>Beli Kit Sekarang (Rp47.000)</span>
-          <span>⚡</span>
-        </a>
-        <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 12px;">
-          Bisa digunakan baik dengan ekstensi scraper maupun copas manual dari HP.
-        </p>
+        <div class="deliverables">
+          <div class="deliv-item">
+            <div class="deliv-tag">Prompt #1</div>
+            <h4>Rangkuman Sentimen & Emosi 30 Detik</h4>
+            <p>Memetakan pergeseran psikologi sesi 1 vs sesi 2, memisahkan fakta aksi korporasi dari spekulasi liar.</p>
+          </div>
+
+          <div class="deliv-item">
+            <div class="deliv-tag">Prompt #2</div>
+            <h4>Audit Buzzer & Detektor Pom-Pom</h4>
+            <p>Melacak akun kompor dengan cashtag masal dan menghitung sentimen organik murni setelah spam dibersihkan.</p>
+          </div>
+
+          <div class="deliv-item">
+            <div class="deliv-tag">Prompt #3</div>
+            <h4>Radar Divergence (Mood vs Realita)</h4>
+            <p>Mendeteksi ketidaksesuaian saat euforia ritel memuncak namun pergerakan harga/volume menunjukkan distribusi.</p>
+          </div>
+
+          <div class="deliv-item">
+            <div class="deliv-tag">Kamus Khusus</div>
+            <h4>Kamus Slang & Sarkasme Bursa (35+ Kata)</h4>
+            <p>Formula penjinak AI agar memahami istilah lokal: HAKA, Guyur, BSJP, Pagarin Ndar, Bid Ompong, Rompi Oren.</p>
+          </div>
+
+          <div class="deliv-item bonus" style="grid-column: 1 / -1;">
+            <div class="deliv-tag" style="color: var(--accent-emerald);">★ Bonus Eksklusif Termasuk di Dalam Paket</div>
+            <h4>Ekstensi Chrome "Stockbit Stream Scraper" (MV3 v2.14.0)</h4>
+            <p>Alat bantu lokal untuk browser PC/laptop: auto-scroll 5–10 detik, indikator jam bursa IDX real-time, tombol 1-klik Buka AI, dan filter noise instan. Bebas instal tanpa perlu software tambahan.</p>
+          </div>
+        </div>
+
+        <div style="text-align: center;">
+          <a href="https://lynk.id/" target="_blank" class="btn-primary" style="width: 100%; max-width: 520px;">
+            <span>Ambil Kit Sentimen + Bonus Ekstensi (Rp47.000)</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 12px;">
+            Pengiriman instan via email setelah verifikasi pembayaran QRIS / Transfer Bank.
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Free Extension Install Guide -->
-  <section class="container" id="ekstensi" style="padding: 30px 0 60px;">
-    <div class="section-title">
-      <h2>Cara Pasang Ekstensi Gratis (Cuma 1 Menit)</h2>
-      <p>100% Open Source di browser kamu, tanpa perizinan aneh-aneh.</p>
-    </div>
-    <div class="grid-3">
-      <div class="card">
-        <div class="card-icon">1</div>
-        <h3>Download & Ekstrak</h3>
-        <p><a href="extension.zip" download="stockbit-stream-scraper-v2.14.0.zip" style="color:var(--primary);font-weight:700;text-decoration:underline;">Klik di sini download file .zip ekstensi</a>, lalu ekstrak (unzip) foldernya di laptop kamu.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">2</div>
-        <h3>Buka Menu Ekstensi Chrome</h3>
-        <p>Ketik <span class="mono">chrome://extensions</span> di browser, lalu geser tombol <b>Developer Mode</b> di pojok kanan atas ke posisi ON.</p>
-      </div>
-      <div class="card">
-        <div class="card-icon">3</div>
-        <h3>Klik "Load Unpacked"</h3>
-        <p>Pilih folder <span class="mono">extension/</span>. Buka saham apa saja di Stockbit (misal BBRI/ANTM), panel scraper siap jalan!</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="container">
-    <div class="section-title">
-      <h2>Pertanyaan yang Sering Diajukan (FAQ)</h2>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item">
-        <h4>Apakah tool scraper ini gratis selamanya?</h4>
-        <p>Ya, ekstensi Stockbit Stream Scraper ini 100% gratis untuk riset mandiri kamu. Tidak ada biaya langganan software.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Apakah aman dari banned Stockbit?</h4>
-        <p>Sangat aman karena ekstensi ini tidak melakukan auto-post, tidak melakukan botting agresif, dan hanya membaca elemen teks lokal yang sudah tampil di layar browser kamu (dilengkapi jeda scroll manusiawi).</p>
-      </div>
-      <div class="faq-item">
-        <h4>Bisa dipakai di HP / Smartphone?</h4>
-        <p>Ekstensi Chrome berjalan di laptop/PC. Namun, jika kamu membeli <b>Kit Sentimen Ritel (Rp47.000)</b>, formula prompt-nya bisa kamu pakai langsung di HP dengan cara copas obrolan forum Stockbit ke aplikasi ChatGPT/Claude di HP.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Apakah ini jaminan cuan / rekomendasi beli?</h4>
-        <p>Bukan. Alat ini adalah pendeteksi sentimen ritel untuk membantu kamu berpikir objektif dan tidak mudah termakan isu pom-pom buzzer.</p>
-      </div>
+  <!-- Legal & Fair Use Shield (Anti-Sue Protection) -->
+  <section class="container" id="legal">
+    <div class="legal-card">
+      <h4>Pernyataan Kepatuhan Hukum, Merek Dagang & Batasan Penggunaan</h4>
+      <p>
+        <b>1. Independensi Merek Dagang:</b> "Stockbit" dan logo terkait adalah merek dagang terdaftar milik PT Stockbit Sekuritas Digital dan/atau entitas afiliasinya. Lotmetrik adalah penyedia produk riset dan alat produktivitas independen pihak ketiga. Website, produk, formula prompt, dan panduan ini <b>TIDAK terafiliasi, tidak disponsori, tidak didukung, dan tidak berafiliasi dalam bentuk kemitraan apa pun dengan Stockbit</b>.
+      </p>
+      <p>
+        <b>2. Hak Cipta Produk Komersial:</b> Nilai komersial yang diperjualbelikan (Rp47.000) adalah hak cipta intelektual atas <b>Formula Rekayasa Prompt AI, Kamus Slang Terstruktur, serta Panduan Riset Mandiri</b> yang dirumuskan secara mandiri oleh Lotmetrik. Kami tidak memperjualbelikan data kepemilikan pribadi pengguna ataupun hak cipta platform manapun.
+      </p>
+      <p>
+        <b>3. Kepatuhan Teknis Ekstensi Peramban:</b> Ekstensi pembantu yang disertakan sebagai bonus dijalankan secara lokal 100% pada peramban (*client-side*) milik pengguna sendiri untuk membaca konten teks yang sudah tampil di layar pengguna pribadi. Ekstensi tidak memiliki backend server, tidak mengumpulkan data kredensial login, dan tidak menjalankan proses otomatisasi agresif/botting yang mengganggu kinerja infrastruktur penyedia platform.
+      </p>
+      <p>
+        <b>4. Bukan Nasihat Keuangan (Not Financial Advice):</b> Seluruh materi dan hasil komputasi model AI ditujukan murni untuk tujuan edukasi dan riset psikologi pasar ritel (*Do Your Own Research*). Lotmetrik bukan penasihat investasi berlisensi dan tidak memberikan rekomendasi beli, jual, maupun titip dana pada efek pasar modal tertentu.
+      </p>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer>
-    <div class="container">
-      <p style="margin-bottom: 8px;">
-        <b>Lotmetrik</b> • Alat Bantu Riset Mandiri Trader Saham Indonesia
-      </p>
-      <p style="margin-bottom: 16px;">
-        Komunitas & Update Sinyal Sentimen: <a href="https://t.me/lotmetrik" target="_blank">t.me/lotmetrik</a>
-      </p>
-      <p style="font-size: 0.75rem; color: var(--text-dim);">
-        Disclaimer: Tidak terafiliasi secara resmi dengan Stockbit atau Bursa Efek Indonesia (IDX). Segala keputusan investasi berada pada tanggung jawab masing-masing trader (DYOR).
-      </p>
+  <footer class="container">
+    <div>
+      <b>Lotmetrik Research</b> © 2026 • Analisis Sentimen & Intelegensi Risiko Ritel IDX
+    </div>
+    <div style="display: flex; gap: 16px;">
+      <a href="https://t.me/lotmetrik" target="_blank">Telegram Komunitas</a>
+      <a href="#legal">Kepatuhan Hukum</a>
     </div>
   </footer>
 
